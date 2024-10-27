@@ -1,23 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import Navbar from './components/Navbar';
+import EventsList from './components/EventsList';
+import Modal from './components/Modal';
+import events from './events';
+
 
 function App() {
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredEvents = events.filter(event =>
+    event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    event.location.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const openModal = (event) => setSelectedEvent(event);
+  const closeModal = () => setSelectedEvent(null);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App bg-gray-100 min-h-screen">
+      <Navbar setSearchTerm={setSearchTerm} />
+      <EventsList events={filteredEvents} openModal={openModal} />
+      {selectedEvent && <Modal event={selectedEvent} closeModal={closeModal} />}
     </div>
   );
 }
